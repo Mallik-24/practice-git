@@ -3,31 +3,22 @@ name: Sync to Bitbucket
 on:
   push:
     branches:
-      - main
+      - main  # Change this if you're using a different branch
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Setup Git
-        run: |
-          git config --global user.name "arjun
-          git config --global user.email "mallikarjunkonemane@gmail.com"
-
-      - name: Clone Bitbucket Repository
-        uses: webfactory/standard-version@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: " https://arjun-24-admin@bitbucket.org/arjun-24/git-sync.git"
-          branch: main
-          tag-prefix: v
+          fetch-depth: 0  # Fetch all history for all branches
 
       - name: Push to Bitbucket
-        run: |
-          git push origin main
         env:
-          GIT_USERNAME: ${{ secrets.BITBUCKET_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BITBUCKET_PASSWORD }}
+          BITBUCKET_USERNAME: ${{ secrets.BITBUCKET_USERNAME }}
+          BITBUCKET_PASSWORD: ${{ secrets.BITBUCKET_PASSWORD }}
+        run: |
+          git remote add bitbucket https://$BITBUCKET_USERNAME:$BITBUCKET_PASSWORD@bitbucket.org/arjun-24/git-sync.git
+          git push bitbucket main --force  # Change 'main' if using a different branch
